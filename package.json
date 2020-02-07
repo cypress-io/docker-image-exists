@@ -1,6 +1,6 @@
 {
   "name": "docker-image-not-found",
-  "version": "1.0.0",
+  "version": "0.0.0-development",
   "description": "Check if a docker image does not exist in the docker hub registry",
   "main": "src/index.js",
   "files": [
@@ -18,5 +18,10 @@
   "bin": {
     "docker-image-not-found": "./bin/docker-image-not-found"
   },
-  "scripts": {}
+  "scripts": {
+    "semantic-release": "semantic-release"
+  },
+  "devDependencies": {
+    "semantic-release": "^17.0.2"
+  }
 }
