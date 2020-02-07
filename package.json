@@ -19,9 +19,13 @@
     "docker-image-not-found": "./bin/docker-image-not-found"
   },
   "scripts": {
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "lint": "eslint --fix src bin/docker-image-not-found"
   },
   "devDependencies": {
+    "eslint": "6.8.0",
+    "eslint-config-prettier": "6.10.0",
+    "prettier": "1.19.1",
     "semantic-release": "^17.0.2"
   }
 }
