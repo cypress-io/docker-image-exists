@@ -1,39 +1,44 @@
-# docker-image-exists
+# docker-image-not-found
+> If you want to do something _only if the Docker Hub does not have an image_
 
-> Ever needed to check if a specific docker image has been published to Docker
-Hub?
+Only exits with 0 if the Docker registry positively responds with "image not found" response. Any other response (found, network error, etc) will exit with 1.
 
-## Install
+## Use
 
-```
-npm install -g docker-image-exists
-```
-
-## Usage
+### Image does not exist
 
 ```
-export DOCKER_USER=stayradiated
-export DOCKER_PASSWORD=supersecretpassword
-
-if docker-image-exists --quiet --repo stayradiated/dockerthing:2.0.0
-then
-  echo Docker image exist!
-else
-  echo Need to create docker image!
-fi
+npx docker-image-not-found --repo cypress/base:nope
+got an error fetching info about Docker image docker.io/cypress/base:nope
+Got definite NotFoundError
+exiting with code 0
 ```
 
-## Options
+The only case when this script exits with `0`
+
+### Image exists
 
 ```
-Usage: docker-image-exists [options]
+npx docker-image-not-found --repo cypress/base:8.9.3
+found image docker.io/cypress/base:8.9.3
+exiting with code 1
+```
 
-Options:
+### Network is down
 
-  -h, --help                 output usage information
-  -V, --version              output the version number
-  -q, --quiet                Do not print anything to console
-  -r, --repo [repo]          Docker repo name (owner/name:tag)
-  -u, --username [username]  Docker username
-  -p, --password [password]  Docker password
+```
+$ ./bin/docker-image-not-found docker-image-not-found --repo cypress/base:nope
+got an error fetching info about Docker image docker.io/cypress/base:nope
+got an error other than image not found
+Error: getaddrinfo ENOTFOUND registry-1.docker.io
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:60:26) {
+  [stack]: 'Error: getaddrinfo ENOTFOUND registry-1.docker.io\n' +
+    '    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:60:26)',
+  [message]: 'getaddrinfo ENOTFOUND registry-1.docker.io',
+  errno: 'ENOTFOUND',
+  code: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'registry-1.docker.io'
+}
+exiting with code 1
 ```

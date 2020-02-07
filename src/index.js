@@ -1,46 +1,46 @@
-import drc from 'docker-registry-client'
-import program from 'commander'
+const drc = require('docker-registry-client')
 
-import {version} from '../package.json'
+const isImageNotFound = (err) =>
+    err && err.body && err.body.code === 'NotFoundError'
 
-program
-  .version(version)
-  .option('-q, --quiet', 'Do not print anything to console')
-  .option('-r, --repo [repo]', 'Docker repo name (owner/name:tag)', '')
-  .option('-u, --username [username]', 'Docker username', process.env.DOCKER_USER)
-  .option('-p, --password [password]', 'Docker password', process.env.DOCKER_PASSWORD)
-  .option('--missing-answer-as-exists', 'Treat no answer from the Docker Registry as image exists')
-  .parse(process.argv)
+/**
+ * Checks if specific Docker image DOES NOT exist.
+ * Resolves with true if the image DOES NOT exist, resolves with false for anything
+ * else.
+*/
+const dockerImageNotFound = (repo) => {
+  const rar = drc.parseRepoAndRef(repo)
 
-if (typeof program.repo !== 'string' || program.repo.trim().length === 0) {
-  throw new Error('You must specify --repo for docker-image-exists to work!')
+  const client = drc.createClientV2({
+    repo: rar
+  })
+
+  const tagOrDigest = rar.tag || rar.digest
+
+  return new Promise((resolve) => {
+    client.getManifest({ ref: tagOrDigest }, (err) => {
+      client.close()
+
+      if (err) {
+        console.error('got an error fetching info about Docker image %s:%s', rar.canonicalName, tagOrDigest)
+
+        if (isImageNotFound(err)) {
+          console.log('Got definite %s', err.body.code)
+          return resolve(true)
+        }
+
+        console.error('got an error other than image not found')
+        console.error('%o', err)
+
+        return resolve(false)
+      }
+
+      console.log('found image %s:%s', rar.canonicalName, tagOrDigest)
+      return resolve(false)
+    })
+  })
 }
-const rar = drc.parseRepoAndRef(program.repo)
 
-const client = drc.createClientV2({
-  repo: rar,
-  username: program.username,
-  password: program.password,
-})
-
-const tagOrDigest = rar.tag || rar.digest
-
-client.getManifest({ref: tagOrDigest}, (err) => {
-  client.close()
-
-  if (!program.quiet) {
-    console.log(err || `The docker image at "${program.repo}" exists`)
-  }
-
-  if (program.missingAnswerAsExists) {
-    if (!err) {
-      return process.exit(0)
-    }
-
-    const imageNotFound = Boolean(err.body && err.body.code === 'NotFoundError')
-    console.log('registry responded with clear image not found?', imageNotFound)
-    return process.exit(imageNotFound ? 1 : 0)
-  }
-
-  process.exit(err ? 1 : 0)
-})
+module.exports = {
+  dockerImageNotFound
+}
