@@ -1,4 +1,4 @@
-# docker-image-not-found
+# docker-image-not-found [![CircleCI](https://circleci.com/gh/cypress-io/docker-image-not-found/tree/master.svg?style=svg)](https://circleci.com/gh/cypress-io/docker-image-not-found/tree/master)
 > If you want to do something _only if the Docker Hub does not have an image_
 
 Only exits with 0 if the Docker registry positively responds with "image not found" response. Any other response (found, network error, etc) will exit with 1.
