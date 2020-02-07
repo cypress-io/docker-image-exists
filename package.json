@@ -16,7 +16,7 @@
     "docker-registry-client": "^3.2.6"
   },
   "bin": {
-    "docker-image-not-found": "./bin/docker-image-not-found"
+    "docker-image-not-found": "./bin/docker-image-not-found.js"
   },
   "scripts": {
     "semantic-release": "semantic-release",
@@ -37,7 +37,6 @@
     }
   },
   "lint-staged": {
-    "*.js": ["eslint --fix"],
-    "bin/docker-image-not-found": ["eslint --fix"]
+    "*.js": ["eslint --fix"]
   }
 }
