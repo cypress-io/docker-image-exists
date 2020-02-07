@@ -20,7 +20,7 @@
   },
   "scripts": {
     "semantic-release": "semantic-release",
-    "lint": "eslint --fix src bin/docker-image-not-found"
+    "lint": "eslint --fix src bin"
   },
   "devDependencies": {
     "eslint": "6.8.0",
