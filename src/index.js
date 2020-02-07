@@ -12,7 +12,7 @@ const dockerImageNotFound = repo => {
   const rar = drc.parseRepoAndRef(repo)
 
   const client = drc.createClientV2({
-    repo: rar,
+    repo: rar
   })
 
   const tagOrDigest = rar.tag || rar.digest
@@ -46,5 +46,5 @@ const dockerImageNotFound = repo => {
 }
 
 module.exports = {
-  dockerImageNotFound,
+  dockerImageNotFound
 }
