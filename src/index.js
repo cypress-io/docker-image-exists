@@ -9,12 +9,12 @@ program
   .option('-r, --repo [repo]', 'Docker repo name (owner/name:tag)', '')
   .option('-u, --username [username]', 'Docker username', process.env.DOCKER_USER)
   .option('-p, --password [password]', 'Docker password', process.env.DOCKER_PASSWORD)
+  .option('--missing-answer-as-exists', 'Treat no answer from the Docker Registry as image exists')
   .parse(process.argv)
 
 if (typeof program.repo !== 'string' || program.repo.trim().length === 0) {
   throw new Error('You must specify --repo for docker-image-exists to work!')
 }
-
 const rar = drc.parseRepoAndRef(program.repo)
 
 const client = drc.createClientV2({
@@ -30,6 +30,16 @@ client.getManifest({ref: tagOrDigest}, (err) => {
 
   if (!program.quiet) {
     console.log(err || `The docker image at "${program.repo}" exists`)
+  }
+
+  if (program.missingAnswerAsExists) {
+    if (!err) {
+      return process.exit(0)
+    }
+
+    const imageNotFound = Boolean(err.body && err.body.code === 'NotFoundError')
+    console.log('registry responded with clear image not found?', imageNotFound)
+    return process.exit(imageNotFound ? 1 : 0)
   }
 
   process.exit(err ? 1 : 0)
