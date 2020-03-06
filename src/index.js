@@ -1,4 +1,5 @@
 const drc = require('docker-registry-client')
+const debug = require('debug')('docker-image-not-found')
 
 const isImageNotFound = err =>
   err && err.body && err.body.code === 'NotFoundError'
@@ -9,7 +10,9 @@ const isImageNotFound = err =>
  * else.
  */
 const dockerImageNotFound = repo => {
+  debug('parsing repo string %o', { repo })
   const rar = drc.parseRepoAndRef(repo)
+  debug('parsed to %o', rar)
 
   const client = drc.createClientV2({
     repo: rar
@@ -40,6 +43,7 @@ const dockerImageNotFound = repo => {
       }
 
       console.log('found image %s:%s', rar.canonicalName, tagOrDigest)
+      debug('full repo info %o', rar)
       return resolve(false)
     })
   })

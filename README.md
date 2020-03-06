@@ -42,3 +42,7 @@ Error: getaddrinfo ENOTFOUND registry-1.docker.io
 }
 exiting with code 1
 ```
+
+### Debugging
+
+Run this tool with `DEBUG=docker-image-not-found` environment variable to see additional debug logs
