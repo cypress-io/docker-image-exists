@@ -49,6 +49,38 @@ const dockerImageNotFound = repo => {
   })
 }
 
+/**
+ * Resolves with an object containing image name and list of all tags
+ * { name: 'cypress/browsers', tags: [...] }
+ * @param {string} imageName like "cypress/browsers"
+ */
+const listTags = imageName => {
+  debug('parsing repo name %o', { imageName })
+  const repo = drc.parseRepoAndRef(imageName)
+  debug('parsed to %o', repo)
+
+  const client = drc.createClientV2({ repo })
+
+  const tagOrDigest = repo.tag || repo.digest
+
+  return new Promise((resolve, reject) => {
+    client.listTags((err, repoTags) => {
+      client.close()
+
+      if (err) {
+        console.error('could not list tags for %s %s', imageName, tagOrDigest)
+        console.error('parsed into %o', repo)
+        console.error(err)
+        return reject(err)
+      }
+
+      debug('got repo tags %o', repoTags)
+      resolve(repoTags)
+    })
+  })
+}
+
 module.exports = {
-  dockerImageNotFound
+  dockerImageNotFound,
+  listTags
 }

@@ -43,6 +43,40 @@ Error: getaddrinfo ENOTFOUND registry-1.docker.io
 exiting with code 1
 ```
 
+## API
+
+To use this utility as a module
+
+### dockerImageNotFound
+
+```js
+const di = require('docker-image-not-found')
+const notFound = await di.dockerImageNotFound('image name')
+// notFound is true only if the registry has responded with "NotFound"
+```
+
+### listTags
+
+Returns list of tags
+
+```js
+const di = require('docker-image-not-found')
+await di.listTags('cypress/included')
+{
+  name: 'cypress/included',
+  tags: [
+    '3.2.0', '3.3.0', '3.3.1',
+    '3.3.2', '3.4.0', '3.4.1',
+    '3.5.0', '3.6.0', '3.6.1',
+    '3.7.0', '3.8.0', '3.8.1',
+    '3.8.2', '3.8.3', '4.0.0',
+    '4.0.1', '4.0.2', '4.1.0'
+  ]
+}
+```
+
+## Misc
+
 ### Debugging
 
 Run this tool with `DEBUG=docker-image-not-found` environment variable to see additional debug logs
