@@ -9,6 +9,7 @@ jobs:
           steps:
             - run: npm install
       - run: npm run lint
+      - run: npm test
       - run: npm run semantic-release
 orbs:
   node: circleci/node@1.1
