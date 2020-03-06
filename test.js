@@ -22,3 +22,13 @@ test('listTags', async t => {
     '3.8.3'
   ])
 })
+
+test('finds existing image', async t => {
+  const notFound = await di.dockerImageNotFound('cypress/base:10.18.0')
+  t.falsy(notFound)
+})
+
+test('does not find wrong image tag', async t => {
+  const notFound = await di.dockerImageNotFound('cypress/base:does-not-exist')
+  t.truthy(notFound)
+})
