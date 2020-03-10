@@ -7,9 +7,22 @@ jobs:
       - checkout
       - node/with-cache:
           steps:
-            - run: npm install
+            - run: npm ci
       - run: npm run lint
       - run: npm test
+
+  use-prod:
+    executor:
+      name: node/default
+      tag: '12'
+      env:
+        NODE_ENV: production
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: npm ci
+      - run: node ./bin/docker-image-not-found.js --repo cypress/included:not-found
 
   release:
     executor:
@@ -19,7 +32,7 @@ jobs:
       - checkout
       - node/with-cache:
           steps:
-            - run: npm install
+            - run: npm ci
       - run: npm run semantic-release
 
 orbs:
@@ -38,3 +51,4 @@ workflows:
                 - master
           requires:
             - build
+            - use-prod
