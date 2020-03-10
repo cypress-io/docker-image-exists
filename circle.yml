@@ -12,11 +12,11 @@ jobs:
       - run: npm test
 
   use-prod:
+    environment:
+      NODE_ENV: production
     executor:
       name: node/default
       tag: '12'
-      env:
-        NODE_ENV: production
     steps:
       - checkout
       - node/with-cache:
@@ -44,6 +44,7 @@ workflows:
   build_and_test:
     jobs:
       - build
+      - use-prod
       - release:
           filters:
             branches:
